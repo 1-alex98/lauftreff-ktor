@@ -1,5 +1,44 @@
 package vontrostorff.de.templates
 
-class LayoutTemplate {
+import io.ktor.server.html.*
+import kotlinx.html.*
+
+class LayoutTemplate: Template<HTML> {
+    val content = Placeholder<FlowContent>()
+    override fun HTML.apply() {
+        head {
+            title("Uni Bonn Lauftreff Anwesenheit")
+            link(href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel = "stylesheet")
+            script {
+                src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+            }
+            link(href = "/static/main.css", rel = "stylesheet")
+        }
+        body {
+            div{
+                navbar()
+                insert(content)
+            }
+        }
+    }
+
+    private fun DIV.navbar() {
+        nav(classes = "navbar navbar-expand-sm bg-primary navbar-dark") {
+            div(classes = "container-fluid") {
+                ul(classes = "navbar-nav") {
+                    li("nav-item") {
+                        a(classes = "nav-link", href = "/current-table") {
+                            +"Tabelle"
+                        }
+                    }
+                    li("nav-item") {
+                        a(classes = "nav-link", href = "/register") {
+                            +"Registrieren"
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

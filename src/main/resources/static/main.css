@@ -1,0 +1,25 @@
+.register-form {
+    max-width: 600px;
+    width: 85%;
+    margin: 0;
+}
+.login-container {
+    padding-top: 5em;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+.submit-button {
+    margin-top: 1em;
+    width: 100%;
+}
+input.username {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+input.email {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}

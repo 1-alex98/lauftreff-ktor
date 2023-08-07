@@ -34,6 +34,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.ktorm:ktorm-core:$ktorm_version")
     implementation("org.postgresql:postgresql:$postgres_version")
+    implementation("com.sun.mail:jakarta.mail:2.0.1")
+    implementation("com.nimbusds:nimbus-jose-jwt:9.31")
+    implementation("io.ktor:ktor-server-status-pages:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 

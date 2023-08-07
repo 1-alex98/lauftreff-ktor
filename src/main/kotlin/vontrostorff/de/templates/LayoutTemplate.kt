@@ -17,7 +17,9 @@ class LayoutTemplate: Template<HTML> {
         body {
             div{
                 navbar()
-                insert(content)
+                div(classes="m-2"){
+                    insert(content)
+                }
             }
         }
     }
@@ -27,13 +29,18 @@ class LayoutTemplate: Template<HTML> {
             div(classes = "container-fluid") {
                 ul(classes = "navbar-nav") {
                     li("nav-item") {
-                        a(classes = "nav-link", href = "/current-table") {
-                            +"Tabelle"
+                        a(classes = "nav-link", href = "/table") {
+                            +"Rangliste"
                         }
                     }
                     li("nav-item") {
                         a(classes = "nav-link", href = "/register") {
                             +"Registrieren"
+                        }
+                    }
+                    li("nav-item") {
+                        a(classes = "nav-link", href = "/impressum") {
+                            +"Impressum"
                         }
                     }
                 }

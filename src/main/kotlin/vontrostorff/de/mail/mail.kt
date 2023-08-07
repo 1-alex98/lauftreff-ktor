@@ -16,6 +16,7 @@ import vontrostorff.de.database.User
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 object Mail{
@@ -76,7 +77,7 @@ fun replaceVariable(emailHtml: String?, name: String, value: String): String? {
 }
 
 private fun sendEmail(receiverEmail: String, subject: String, plainText: String, textHtml: String) {
-    if(!System.getenv("DEVELOPMENT").equals(null)){
+    if(!Objects.equals(System.getenv("DEVELOPMENT"), null)){
         log.info("$receiverEmail : $subject, \n$textHtml")
         return
     }

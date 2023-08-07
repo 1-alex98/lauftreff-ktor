@@ -12,10 +12,11 @@ class ApplicationTest {
     fun testRoot() = testApplication {
         application {
             configureRouting()
+            configureTemplating()
         }
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
-            assertEquals("Hello World!", bodyAsText())
+            assertContains("Lauftreff Tracker", bodyAsText())
         }
     }
 }

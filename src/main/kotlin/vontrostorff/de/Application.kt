@@ -17,6 +17,7 @@ import vontrostorff.de.database.Users
 import vontrostorff.de.plugins.*
 import vontrostorff.de.schedule.Scheduler
 import vontrostorff.de.templates.LayoutTemplate
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 fun main() {
@@ -32,7 +33,7 @@ private fun startStop() {
 }
 
 private fun engineEnvironment() = applicationEngineEnvironment {
-    developmentMode = !System.getenv("DEVELOPMENT").equals(null)
+    developmentMode = ! Objects.equals(System.getenv("DEVELOPMENT"), null)
     connector {
         port= 8080
         host= "0.0.0.0"

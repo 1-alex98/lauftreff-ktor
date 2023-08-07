@@ -1,7 +1,5 @@
 package vontrostorff.de.schedule
 
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.lessEq
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import vontrostorff.de.database.CourseHappening
@@ -12,14 +10,14 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 object Scheduler {
     private val logger: Logger = LoggerFactory.getLogger(Scheduler.javaClass)
     private val executor = Executors.newScheduledThreadPool(1)
 
     fun start(){
-        //executor.scheduleAtFixedRate({ internalRun() },0, 1, TimeUnit.HOURS)
-        internalRun()
+        executor.scheduleAtFixedRate({ internalRun() },0, 1, TimeUnit.HOURS)
     }
 
     private fun internalRun(){

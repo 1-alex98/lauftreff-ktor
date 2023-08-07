@@ -9,7 +9,7 @@ import java.time.Instant
 import java.time.LocalDate
 
 object DatabaseService{
-    private val database = Database.connect("jdbc:postgresql://localhost:5432/postgres", user = "postgres", password = "postgres")
+    private val database = Database.connect(System.getenv("DB_URL"))
 
     private val Database.users get() = this.sequenceOf(Users)
     private val Database.courseHappenings get() = this.sequenceOf(CourseHappenings)

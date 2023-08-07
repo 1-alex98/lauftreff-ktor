@@ -12,6 +12,16 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
+  lt-app:
+    build: .
+    environment:
+      EMAIL_USER: abc
+      HOST_URL: http://localhost:8080
+      EMAIL_PASSWORD: abc
+      DB_URL: jdbc:postgresql://postgres:5432/postgres?user=postgres&password=postgres
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
 
 volumes:
   postgres:

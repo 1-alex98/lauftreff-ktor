@@ -28,18 +28,16 @@ val mailSession = createMailSession()
 fun sendWelcomeEmail(receiverEmail: String) {
     var emailHtml = Mail.javaClass.getResource("/mail/welcome.html")?.readText()
     emailHtml = replaceUnsubscribe(emailHtml, receiverEmail)
-    if (emailHtml != null) {
-        sendEmail(
-            receiverEmail, "Willkommen Lauftreff Uni Bonn",
-            """
-        Willkommen
-        Danke, dass du dich registriert hast. Ab nun wirst du jeden Dienstag um 21 Uhr eine E-Mail bekommen. Dort wird es einen Knopf geben, mit dem du deine Anwesenheit bestätigen kannst.
-        Auf der Webseite siehst du dann, wer wie oft da war.
-        Der jeweils führende und der zweite trägt dann das jeweilige T-shirt.
-        """.trimIndent(), emailHtml
-        )
-        log.info("Send welcome email to $receiverEmail")
-    }
+    sendEmail(
+        receiverEmail, "Willkommen Lauftreff Uni Bonn",
+        """
+    Willkommen
+    Danke, dass du dich registriert hast. Ab nun wirst du jeden Dienstag gegen 19 Uhr eine E-Mail bekommen. Dort wird es einen Knopf geben, mit dem du deine Anwesenheit bestätigen kannst.
+    Auf der Webseite siehst du dann, wer wie oft da war.
+    Der jeweils führende und der zweite trägt dann das jeweilige T-shirt.
+    """.trimIndent(), emailHtml
+    )
+    log.info("Send welcome email to $receiverEmail")
 }
 fun sendHappeningEmail(user: User, courseHappening: CourseHappening) {
     var emailHtml = Mail.javaClass.getResource("/mail/participated_question.html")?.readText()

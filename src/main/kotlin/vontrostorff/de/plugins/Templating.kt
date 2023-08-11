@@ -55,10 +55,10 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.home() {
                 +"Lauftreff Tracker"
             }
             p {
-                +"Hier kannst du dich registrieren, um an der Challenge des Lauftreffs der Uni Bonn teilzunehmen. Wer am meisten da ist, trägt das gelbe Trikot."
+                +"Hier kannst du dich registrieren, um an der Challenge des Lauftreffs der Uni Bonn teilzunehmen. Wer am häufigsten anwesend ist, trägt das gelbe Trikot."
             }
             p {
-                +"Die Anwesenheit wird über eine E-Mail getrackt, die du jede Woche zugeschickt wird."
+                +"Die Anwesenheit wird über eine E-Mail getrackt, die dir jede Woche zugeschickt wird."
             }
         }
     }
@@ -202,7 +202,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.postRegister() {
             }
             p {
                 +"""
-                        Du bekommst ab jetzt jeden Dienstag um 21 Uhr eine E-Mail.
+                        Du bekommst ab jetzt jeden Dienstag gegen 19 Uhr eine E-Mail.
                         In der E-Mail gibt es einen Link, mit dem du deine Teilnahme bestätigen kannst.
                         Deine Teilnahmen tauchen dann auf der 
                         """

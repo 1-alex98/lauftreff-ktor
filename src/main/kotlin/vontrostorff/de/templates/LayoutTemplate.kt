@@ -9,6 +9,12 @@ class LayoutTemplate: Template<HTML> {
         head {
             title("Uni Bonn Lauftreff Anwesenheit")
             link(href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel = "stylesheet")
+            link{
+                rel="icon"
+                href="images/favicon.svg"
+                sizes="any"
+                type="image/svg+xml"
+            }
             script {
                 src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
             }
@@ -32,6 +38,11 @@ class LayoutTemplate: Template<HTML> {
         nav(classes = "navbar navbar-expand-sm bg-primary navbar-dark") {
             div(classes = "container-fluid") {
                 ul(classes = "navbar-nav") {
+                    li("nav-item") {
+                        a(classes = "nav-link", href = "/") {
+                            +"Info"
+                        }
+                    }
                     li("nav-item") {
                         a(classes = "nav-link", href = "/table") {
                             +"Rangliste"

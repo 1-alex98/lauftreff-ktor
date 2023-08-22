@@ -111,35 +111,39 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
                 }
 
                 tbody {
-                    var index = 0;
-                    var lastCount = Integer.MAX_VALUE;
+                    var index = 0
+                    var lastCount = Integer.MAX_VALUE
                     for(userAndCount in userParticipationCount){
+                        if(userAndCount.count < lastCount){
+                            lastCount = userAndCount.count
+                            index++
+                        }
                         tr {
-                            if(index == 0){
-                                th {
-                                    +((index+1).toString() + " ")
-                                    img {
-                                        style = "height:1em"
-                                        src = "/static/yellow-shirt.svg"
+                            when (index) {
+                                1 -> {
+                                    th {
+                                        +((index).toString() + " ")
+                                        img {
+                                            style = "height:1em"
+                                            src = "/static/yellow-shirt.svg"
+                                        }
                                     }
                                 }
-                            } else if (index == 1){
-                                th {
-                                    +(index+1).toString()
-                                    img {
-                                        style = "height:1em"
-                                        src = "/static/silver-shirt.svg"
+                                2 -> {
+                                    th {
+                                        +(index).toString()
+                                        img {
+                                            style = "height:1em"
+                                            src = "/static/silver-shirt.svg"
+                                        }
                                     }
                                 }
-                            } else {
-                                th { +(index+1).toString() }
+                                else -> {
+                                    th { +(index).toString() }
+                                }
                             }
                             td { + userAndCount.user.name.escapeHTML() }
                             td { + userAndCount.count.toString() }
-                            if(userAndCount.count < lastCount){
-                                lastCount = userAndCount.count
-                                index++
-                            }
                         }
                     }
                 }

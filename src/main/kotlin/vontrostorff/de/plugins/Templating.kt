@@ -131,7 +131,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
                                 }
                                 2 -> {
                                     th {
-                                        +(index).toString()
+                                        +((index).toString() + " ")
                                         img {
                                             style = "height:1em"
                                             src = "/static/silver-shirt.svg"

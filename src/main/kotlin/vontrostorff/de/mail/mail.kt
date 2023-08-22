@@ -43,12 +43,14 @@ fun sendHappeningEmail(user: User, courseHappening: CourseHappening) {
     var emailHtml = Mail.javaClass.getResource("/mail/participated_question.html")?.readText()
     emailHtml = replaceUnsubscribe(emailHtml, user.email)
     emailHtml = replaceButtonLink(emailHtml, user, courseHappening)
+    emailHtml = replaceRankButtonLink(emailHtml)
     emailHtml = replaceVariable(emailHtml, "date", LocalDate.ofInstant(courseHappening.date, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.YY")))
     if (emailHtml != null) {
         sendEmail(
             user.email, "Warst du heute da?",
             """
         Warst du heute beim Lauftreff? Wenn ja klicke unten auf den Link, damit wir es zählen können...
+        Email muss als HTML angezeigt werden!!!
         """.trimIndent(), emailHtml
         )
         log.info("Send ask email to ${user.email}")
@@ -68,6 +70,11 @@ private fun replaceButtonLink(emailHtml: String?, user: User, courseHappening: C
     urlBuilder.parameters.clear()
     urlBuilder.parameters.append("token", JwtService.participateToken(user.id, courseHappening.id))
     return replaceVariable(emailHtml, "link", urlBuilder.buildString())!!
+}
+private fun replaceRankButtonLink(emailHtml: String?): String{
+    val urlBuilder = URLBuilder(System.getenv("HOST_URL"))
+    urlBuilder.path("table")
+    return replaceVariable(emailHtml, "linkRank", urlBuilder.buildString())!!
 }
 
 fun replaceVariable(emailHtml: String?, name: String, value: String): String? {

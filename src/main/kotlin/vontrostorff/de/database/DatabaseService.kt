@@ -7,6 +7,7 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 object DatabaseService{
     private val database = Database.connect(System.getenv("DB_URL"))
@@ -113,14 +114,15 @@ object DatabaseService{
             .delete(Users) { it.email eq email}
     }
 
-    fun registerParticipation(data: CourseParticipation) {
+    fun registerParticipation(data: CourseParticipation): Boolean {
         if(database.courseParticipation.find {
             it.courseHappening eq data.courseHappening.id
             it.user eq data.user.id
         } != null) {
-            throw RuntimeException()
+            return false
         }
         database.courseParticipation.add(data)
+        return true
     }
     data class UserAndCount(val user: User, val count: Int)
     fun getUserParticipationCount(semester:Semster ): List<UserAndCount> {
@@ -139,6 +141,25 @@ object DatabaseService{
             UserAndCount(
                 database.users.find { it.id eq userId }!!,
                 count
+            )
+        }
+    }
+    data class CourseParticipationDateAndCourseName(val date:LocalDateTime, val name:String )
+    fun getMyParticipations(userId:Int): List<CourseParticipationDateAndCourseName> {
+        val query = database
+            .from(CourseParticipations)
+            .leftJoin(CourseHappenings, on = CourseParticipations.courseHappening eq CourseHappenings.id)
+            .leftJoin(Courses, on = CourseHappenings.course eq Courses.id)
+            .select(CourseHappenings.date, Courses.name)
+            .whereWithConditions{
+                it += CourseParticipations.user eq userId
+            }
+        return query.map {
+            val date = it.getLocalDateTime(1)
+            val name = it.getString(2)
+            CourseParticipationDateAndCourseName(
+                date!!,
+                name!!
             )
         }
     }

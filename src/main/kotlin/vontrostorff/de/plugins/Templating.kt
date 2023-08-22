@@ -1,5 +1,6 @@
 package vontrostorff.de.plugins
 
+import io.ktor.http.*
 import io.ktor.server.html.*
 import kotlinx.html.*
 import io.ktor.server.application.*
@@ -15,6 +16,7 @@ import vontrostorff.de.database.DatabaseService
 import vontrostorff.de.mail.sendWelcomeEmail
 import vontrostorff.de.templates.LayoutTemplate
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun Application.configureTemplating() {
 
@@ -27,6 +29,9 @@ fun Application.configureTemplating() {
         get("table") {
             table()
         }
+        get("my") {
+            my()
+        }
         get("/impressum") {
             impressum()
         }
@@ -36,8 +41,11 @@ fun Application.configureTemplating() {
         get("post-register") {
             postRegister()
         }
-        get("unsubscribe"){
+        get("unsubscribe/exec"){
             unsubscribe()
+        }
+        get("unsubscribe"){
+            unsubscribeAsk()
         }
         get("participate"){
             participate()
@@ -49,7 +57,7 @@ fun Application.configureTemplating() {
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.home() {
-    call.respondHtmlTemplate(LayoutTemplate()) {
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
             h1{
                 +"Lauftreff Tracker"
@@ -60,6 +68,25 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.home() {
             p {
                 +"Die Anwesenheit wird über eine E-Mail getrackt, die dir jede Woche zugeschickt wird."
             }
+            button(classes = "mt-2 btn btn-outline-info flash-button hidden"){
+                id ="installButton"
+                type=ButtonType.button
+                onClick ="installPWA()"
+                i(classes="bi bi-download"){
+                }
+                +" Als App installieren"
+            }
+            a(href = "https://github.com/1-alex98/lauftreff-ktor"){
+                button(classes = "mt-2 btn btn-outline"){
+                    type=ButtonType.button
+                    i(classes="bi bi-github"){}
+                    +" Code auf Github angucken"
+                }
+            }
+
+            script {
+                src = "/static/install.js"
+            }
         }
     }
 }
@@ -68,7 +95,8 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
     val semester = DatabaseService.getSemesterByDate(LocalDate.now())
     val userParticipationCount =
         DatabaseService.getUserParticipationCount(semester)
-    call.respondHtmlTemplate(LayoutTemplate()) {
+
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
             h3("m2") {
                 +"Semester: ${semester.name}"
@@ -83,7 +111,9 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
                 }
 
                 tbody {
-                    for((index, userAndCount) in userParticipationCount.withIndex()){
+                    var index = 0;
+                    var lastCount = Integer.MAX_VALUE;
+                    for(userAndCount in userParticipationCount){
                         tr {
                             if(index == 0){
                                 th {
@@ -94,12 +124,54 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
                                     }
                                 }
                             } else if (index == 1){
-                                th { +(index+1).toString() }
+                                th {
+                                    +(index+1).toString()
+                                    img {
+                                        style = "height:1em"
+                                        src = "/static/silver-shirt.svg"
+                                    }
+                                }
                             } else {
                                 th { +(index+1).toString() }
                             }
                             td { + userAndCount.user.name.escapeHTML() }
                             td { + userAndCount.count.toString() }
+                            if(userAndCount.count < lastCount){
+                                lastCount = userAndCount.count
+                                index++
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private suspend fun PipelineContext<Unit, ApplicationCall>.my() {
+    val userId = JwtService.getUserId(call.request.cookies["token"])
+    if(userId == null) {
+        errorFlash("Unbekannter Nutzer!")
+        return
+    }
+    val participations =
+        DatabaseService.getMyParticipations(userId)
+
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
+        content {
+            table("table m-2") {
+                thead {
+                    tr {
+                        th { +"Zeit" }
+                        th { +"Name des Kurses" }
+                    }
+                }
+
+                tbody {
+                    for(participation in participations){
+                        tr {
+                            td { + participation.date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) }
+                            td { + participation.name.escapeHTML() }
                         }
                     }
                 }
@@ -109,7 +181,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.impressum() {
-    call.respondHtmlTemplate(LayoutTemplate()) {
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
             h1 { +"Impressum" }
             p {
@@ -124,7 +196,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.impressum() {
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.dsgvo() {
-    call.respondHtmlTemplate(LayoutTemplate()) {
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
             h1 { +"Datenschutzvereinbarung für die Webseite \"Lauftreff Tracker\"" }
             p { +"Datum der letzten Aktualisierung: 01.08.2023" }
@@ -195,7 +267,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.dsgvo() {
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.postRegister() {
-    call.respondHtmlTemplate(LayoutTemplate()) {
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
             h1 {
                 +"Du wurdest registriert"
@@ -232,7 +304,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.unsubscribe() {
         return
     }
 
-    call.respondHtmlTemplate(LayoutTemplate()) {
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
             h1 {
                 +"Deine Daten wurden gelöscht"
@@ -240,32 +312,56 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.unsubscribe() {
         }
     }
 }
+private suspend fun PipelineContext<Unit, ApplicationCall>.unsubscribeAsk() {
+    val token = java.net.URLEncoder.encode(call.request.queryParameters["token"]!!, "utf-8")
+
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
+        content {
+            a {
+                href ="/unsubscribe/exec?token=$token"
+                button(classes="btn btn-outline-danger"){
+                    type=ButtonType.button
+                    +"Klicken zum Löschen aller deiner Daten"
+                }
+            }
+        }
+    }
+}
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.participate() {
     val token = call.request.queryParameters["token"]!!
+    val registered: Boolean
     try {
         val data = JwtService.getDataFromParticipateToken(token)
-        try {
-            DatabaseService.registerParticipation(data)
-        } catch (e: Exception) {
-            call.application.environment.log.error("Register participation failed",e)
-            errorFlash("Eintrag bereits vorhanden oder Nutzer gelöscht. Hast du den Link bereits geklickt?")
-            return
-        }
+        call.response.cookies.append(Cookie("token", JwtService.getLoginTokenFromParticipationToken(token)))
+        registered = DatabaseService.registerParticipation(data)
     } catch (e: Throwable) {
         call.application.environment.log.error("Invalid token",e)
         errorFlash("Invalider Token. Du musst den Link innerhalb einer Woche klicken.")
         return
     }
 
-    call.respondHtmlTemplate(LayoutTemplate()) {
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
+            if(!registered)
+            {
+                div(classes = "alert alert-danger") {
+                    role = "warn"
+                    +"Wir hatten deine Teilnahme bereits registriert."
+                }
+            }
+
             h1 {
                 +"Wir haben deine Teilnahme erfasst: "
                 a(href = "table"){
                     +"Zur Rangliste"
                 }
+                +" "
+                a(href = "my"){
+                    +"Meine Teilnahmen"
+                }
             }
+
         }
     }
 }
@@ -297,7 +393,7 @@ private fun Routing.registerPost() {
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.errorFlash(error:String) {
-    call.respondHtmlTemplate(LayoutTemplate()) {
+    call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
             div(classes = "alert alert-danger") {
                 role = "alert"
@@ -309,7 +405,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.errorFlash(error:Stri
 
 private fun Routing.registerGet() {
     get("/register") {
-        call.respondHtmlTemplate(LayoutTemplate()) {
+        call.respondHtmlTemplate(LayoutTemplate(call)) {
             content {
                 div(classes = "container-fluid login-container") {
                     form(classes = "register-form", action = "/register") {

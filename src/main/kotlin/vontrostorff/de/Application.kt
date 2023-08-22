@@ -6,14 +6,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.html.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.response.*
 import kotlinx.html.*
-import org.ktorm.database.Database
-import org.ktorm.entity.add
-import org.ktorm.entity.sequenceOf
 import vontrostorff.de.database.DatabaseService
-import vontrostorff.de.database.User
-import vontrostorff.de.database.Users
 import vontrostorff.de.plugins.*
 import vontrostorff.de.schedule.Scheduler
 import vontrostorff.de.templates.LayoutTemplate
@@ -60,7 +54,7 @@ fun Application.myApplicationModule() {
     configureRouting()
     install(StatusPages) {
         exception<Throwable> { call, cause ->
-            call.respondHtmlTemplate(LayoutTemplate(), status = HttpStatusCode.InternalServerError) {
+            call.respondHtmlTemplate(LayoutTemplate(call), status = HttpStatusCode.InternalServerError) {
                 content {
                     div(classes = "m-2") {
                         h1 {

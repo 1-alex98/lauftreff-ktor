@@ -23,3 +23,26 @@ input.email {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.hidden {
+    display: none!important;
+}
+
+.flash-button {
+    animation: flash-button-an 5s linear infinite;
+}
+
+@keyframes flash-button-an {
+    0% {
+        --bs-btn-color: #0dcaf0;
+        --bs-btn-border-color: #0dcaf0;
+    }
+    50% {
+        --bs-btn-color: #0d6efd;
+        --bs-btn-border-color: #0d6efd;
+    }
+    100% {
+        --bs-btn-color: #0dcaf0;
+        --bs-btn-border-color: #0dcaf0;
+    }
+}

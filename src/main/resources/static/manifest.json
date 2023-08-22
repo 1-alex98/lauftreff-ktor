@@ -1,0 +1,31 @@
+{
+  "short_name": "Lauftreff Tracking",
+  "name": "Lauftreff Tracking Uni Bonn",
+  "icons": [
+    {
+      "src": "/static/runner.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/static/runner.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "id": "/",
+  "start_url": "/",
+  "background_color": "#0d6efd",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#0d6efd",
+  "description": "Tracke deine Lauftreff Anwesenheit",
+  "screenshots": [
+    {
+      "src": "static/Screenshot.png",
+      "type": "image/png",
+      "sizes": "580x594",
+      "form_factor": "narrow"
+    }
+  ]
+}

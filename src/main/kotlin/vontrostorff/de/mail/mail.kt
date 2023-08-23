@@ -47,8 +47,8 @@ fun sendHappeningEmail(user: User, courseHappening: CourseHappening) {
     emailHtml = replaceVariable(emailHtml, "date", LocalDate.ofInstant(courseHappening.date, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.YY")))
     if (emailHtml != null) {
         sendEmail(
-            user.email, "Warst du heute da?",
-            """
+            user.email, "Warst du heute ${LocalDate.ofInstant(courseHappening.date, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM"))} da?",
+        """
         Warst du heute beim Lauftreff? Wenn ja klicke unten auf den Link, damit wir es zählen können...
         Email muss als HTML angezeigt werden!!!
         """.trimIndent(), emailHtml

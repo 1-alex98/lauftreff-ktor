@@ -5,9 +5,7 @@ import io.ktor.util.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.*
 
 object DatabaseService{
     private val database = Database.connect(System.getenv("DB_URL"))
@@ -72,7 +70,7 @@ object DatabaseService{
             .select()
             .whereWithConditions {
                 it += CourseHappenings.sentEmail eq false
-                it += CourseHappenings.date lessEq Instant.now()
+                it += CourseHappenings.date lessEq LocalDateTime.now().toInstant(ZoneOffset.UTC)
             }
         return query.map { CourseHappenings.createEntity(it, withReferences = true) }
     }

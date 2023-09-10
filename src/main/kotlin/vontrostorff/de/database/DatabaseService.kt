@@ -114,8 +114,7 @@ object DatabaseService{
 
     fun registerParticipation(data: CourseParticipation): Boolean {
         if(database.courseParticipation.find {
-            it.courseHappening eq data.courseHappening.id
-            it.user eq data.user.id
+                (it.courseHappening eq data.courseHappening.id).and(it.user eq data.user.id)
         } != null) {
             return false
         }

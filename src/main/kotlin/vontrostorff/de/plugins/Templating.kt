@@ -99,7 +99,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
     call.respondHtmlTemplate(LayoutTemplate(call)) {
         content {
             h3("m2") {
-                +"Semester: ${semester.name}"
+                +"Semester: ${semester.name} (${semester.beginning.format(DateTimeFormatter.ofPattern("dd.MM.YY"))}-${semester.end.format(DateTimeFormatter.ofPattern("dd.MM.YY"))})"
             }
             table("table m-2") {
                 thead {

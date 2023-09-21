@@ -63,7 +63,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.home() {
                 +"Lauftreff Tracker"
             }
             p {
-                +"Hier kannst du dich registrieren, um an der Challenge des Lauftreffs der Uni Bonn teilzunehmen. Wer am häufigsten anwesend ist, trägt das gelbe Trikot."
+                +"Hier kannst du dich registrieren, um an der Challenge des Lauftreffs der Uni Bonn teilzunehmen. Wer am häufigsten anwesend ist, gewinnt das gelbe Trikot."
             }
             p {
                 +"Die Anwesenheit wird über eine E-Mail getrackt, die dir jede Woche zugeschickt wird."
@@ -192,8 +192,6 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.impressum() {
                 +"Verantwortlich für den Inhalt dieser Webseite:"
             }
             p { +"Alexander von Trostorff" }
-            p { +"Am Köppekreuz 11" }
-            p { +"53225 Bonn" }
             p { +"Die Webseite ist ein rein privates Projekt." }
         }
     }

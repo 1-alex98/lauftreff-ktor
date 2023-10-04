@@ -113,7 +113,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
                 tbody {
                     var index = 0
                     var lastCount = Integer.MAX_VALUE
-                    for(userAndCount in userParticipationCount){
+                    for(userAndCount in userParticipationCount.sortedBy { -it.count }){
                         if(userAndCount.count < lastCount){
                             lastCount = userAndCount.count
                             index++
@@ -132,10 +132,10 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
                                 2 -> {
                                     th {
                                         +((index).toString() + " ")
-                                        img {
-                                            style = "height:1em"
-                                            src = "/static/silver-shirt.svg"
-                                        }
+                                        //img {
+                                        //    style = "height:1em"
+                                        //    src = "/static/silver-shirt.svg"
+                                        //}
                                     }
                                 }
                                 else -> {

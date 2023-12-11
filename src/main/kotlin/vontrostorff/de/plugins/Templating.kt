@@ -189,6 +189,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.my() {
             val byMonth = participations.stream()
                 .collect(groupingBy { it.date.month })
                 .mapValues { it.value.size }
+                .toSortedMap()
             script {
                 +"""
                     var data = [

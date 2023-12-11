@@ -44,6 +44,7 @@ fun sendHappeningEmail(user: User, courseHappening: CourseHappening) {
     emailHtml = replaceUnsubscribe(emailHtml, user.email)
     emailHtml = replaceButtonLink(emailHtml, user, courseHappening)
     emailHtml = replaceRankButtonLink(emailHtml)
+    emailHtml = replaceCourse(emailHtml,courseHappening.course.name)
     emailHtml = replaceVariable(emailHtml, "date", LocalDate.ofInstant(courseHappening.date, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.YY")))
     if (emailHtml != null) {
         sendEmail(
@@ -63,6 +64,13 @@ private fun replaceUnsubscribe(emailHtml: String?, receiverEmail: String): Strin
     urlBuilder.parameters.clear()
     urlBuilder.parameters.append("token", JwtService.unsubscribeToken(receiverEmail))
     return replaceVariable(emailHtml, "unsubscribe", urlBuilder.buildString())!!
+}
+
+private fun replaceCourse(emailHtml: String?, courseName: String): String{
+    assert(courseName.matches(Regex("[äöüÄÖÜa-zA-Z0-9 .!/?]*"))) {
+        "courseName String contains invalid characters."
+    }
+    return replaceVariable(emailHtml, "course", courseName)!!
 }
 private fun replaceButtonLink(emailHtml: String?, user: User, courseHappening: CourseHappening): String{
     val urlBuilder = URLBuilder(System.getenv("HOST_URL"))

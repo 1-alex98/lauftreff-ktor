@@ -18,6 +18,7 @@ import vontrostorff.de.database.DatabaseService
 import vontrostorff.de.mail.sendWelcomeEmail
 import vontrostorff.de.templates.LayoutTemplate
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors.groupingBy
 
@@ -185,22 +186,33 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.my() {
             }
             div {
                 id = "plot"
+                style = "width: 100%"
             }
             val byMonth = participations.stream()
-                .collect(groupingBy { it.date.month })
+                .collect(groupingBy { YearMonth.of(it.date.year, it.date.month) })
                 .mapValues { it.value.size }
                 .toSortedMap()
             script {
                 +"""
                     var data = [
                       {
-                        x: ${"[${byMonth.keys.map { "'${it.name}'" }.joinToString(separator = ",")}]"},
+                        x: ${"[${byMonth.keys.map { "'$it'" }.joinToString(separator = ",")}]"},
                         y: ${"[${byMonth.values.joinToString(separator = ",")}]"},
                         type: 'bar'
                       }
                     ];
+                    const layout = {
+                        xaxis: {
+                            type: 'category'  // Set x-axis type to category
+                        },
+                        yaxis: {
+                            title: 'Values'
+                        },
+                        title: 'Attention my month'
+                    };
+                    
 
-                    Plotly.newPlot('plot', data);
+                    Plotly.newPlot('plot', data, layout);
                 """.trimIndent()
             }
         }

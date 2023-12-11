@@ -10,6 +10,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.postgresql.util.PSQLException
 import vontrostorff.de.JwtService
 import vontrostorff.de.database.DatabaseService
@@ -17,6 +19,7 @@ import vontrostorff.de.mail.sendWelcomeEmail
 import vontrostorff.de.templates.LayoutTemplate
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.stream.Collectors.groupingBy
 
 fun Application.configureTemplating() {
 
@@ -179,6 +182,25 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.my() {
                         }
                     }
                 }
+            }
+            div {
+                id = "plot"
+            }
+            val byMonth = participations.stream()
+                .collect(groupingBy { it.date.month })
+                .mapValues { it.value.size }
+            script {
+                +"""
+                    var data = [
+                      {
+                        x: ${"[${byMonth.keys.map { "'${it.name}'" }.joinToString(separator = ",")}]"},
+                        y: ${"[${byMonth.values.joinToString(separator = ",")}]"},
+                        type: 'bar'
+                      }
+                    ];
+
+                    Plotly.newPlot('plot', data);
+                """.trimIndent()
             }
         }
     }

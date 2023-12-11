@@ -7,7 +7,10 @@ import io.ktor.server.html.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.statuspages.*
 import kotlinx.html.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import vontrostorff.de.database.DatabaseService
+import vontrostorff.de.mail.Mail
 import vontrostorff.de.plugins.*
 import vontrostorff.de.schedule.Scheduler
 import vontrostorff.de.templates.LayoutTemplate
@@ -47,6 +50,8 @@ private fun engineEnvironment() = applicationEngineEnvironment {
         }
     }
 }
+class Main
+private val log: Logger = LoggerFactory.getLogger(Mail.javaClass)
 
 fun Application.myApplicationModule() {
     configureTemplating()
@@ -54,6 +59,7 @@ fun Application.myApplicationModule() {
     configureRouting()
     install(StatusPages) {
         exception<Throwable> { call, cause ->
+            vontrostorff.de.log.error("Uncaught error", cause)
             call.respondHtmlTemplate(LayoutTemplate(call), status = HttpStatusCode.InternalServerError) {
                 content {
                     div(classes = "m-2") {

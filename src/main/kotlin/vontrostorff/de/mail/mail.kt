@@ -131,7 +131,11 @@ private fun sendEmail(receiverEmail: String, subject: String, plainText: String,
     }
 }
 
-private fun createMailSession(): Session {
+private fun createMailSession(): Session? {
+    if(!Objects.equals(System.getenv("DEVELOPMENT"), null)){
+        log.info("No init of email in DEVELOPMENT")
+        return null
+    }
     // SMTP server configuration properties
     val properties = System.getProperties()
     properties["mail.smtp.host"] = "mail.uni-bonn.de"

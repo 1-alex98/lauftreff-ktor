@@ -67,6 +67,7 @@ object DatabaseService{
     fun happeningsWithoutEmailSent(): List<CourseHappening> {
         val query = database
             .from(CourseHappenings)
+            .leftJoin(Courses, on = CourseHappenings.course eq Courses.id)
             .select()
             .whereWithConditions {
                 it += CourseHappenings.sentEmail eq false

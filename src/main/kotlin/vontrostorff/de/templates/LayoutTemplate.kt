@@ -12,6 +12,9 @@ class LayoutTemplate(val call: ApplicationCall) : Template<HTML> {
             title("Uni Bonn Lauftreff Anwesenheit")
             link(href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel = "stylesheet")
             link(href = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css", rel = "stylesheet")
+            script{
+                src = "https://cdn.plot.ly/plotly-2.27.0.min.js"
+            }
             link{
                 rel="manifest"
                 href="/static/manifest.json"

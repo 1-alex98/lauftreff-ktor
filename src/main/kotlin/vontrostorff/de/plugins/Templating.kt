@@ -358,7 +358,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.participate() {
                 a(href = "table"){
                     +"Zur Rangliste"
                 }
-                +" "
+                br {  }
                 a(href = "my"){
                     +"Meine Teilnahmen"
                 }

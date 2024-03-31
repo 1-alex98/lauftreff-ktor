@@ -32,6 +32,11 @@ input.email {
     animation: flash-button-an 5s linear infinite;
 }
 
+
+.trainer-row > * {
+    color: grey!important;
+}
+
 @keyframes flash-button-an {
     0% {
         --bs-btn-color: #0dcaf0;

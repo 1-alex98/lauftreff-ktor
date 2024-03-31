@@ -10,9 +10,6 @@ import java.io.File
 fun Application.configureRouting() {
 
     routing {
-        get("/api") {
-            call.respondText("Hello World!")
-        }
         get("robots.txt") {
             this@routing.javaClass.getResource("/static/robots.txt")?.let { it1 -> call.respondText(it1.readText()) }
         }

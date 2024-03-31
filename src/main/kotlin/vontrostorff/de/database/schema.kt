@@ -1,5 +1,6 @@
 package vontrostorff.de.database
 
+import org.ktorm.dsl.isNotNull
 import org.ktorm.entity.Entity
 import org.ktorm.schema.*
 import vontrostorff.de.database.CourseParticipations.bindTo
@@ -11,6 +12,7 @@ interface User : Entity<User> {
     var id: Int
     var name: String
     var email: String
+    var trainer: Boolean
 }
 interface Semster : Entity<Semster> {
     companion object : Entity.Factory<Semster>()
@@ -51,6 +53,7 @@ object Users : Table<User>("user") {
     val id = int("id").bindTo { it.id }.primaryKey()
     val email = varchar("email").bindTo { it.email }
     val name = varchar("name").bindTo { it.name }
+    val trainer = boolean("trainer").bindTo { it.trainer }.isNotNull()
 }
 object Semesters : Table<Semster>("semester") {
     val id = int("id").bindTo { it.id }.primaryKey()

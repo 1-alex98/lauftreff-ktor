@@ -16,6 +16,8 @@ import org.postgresql.util.PSQLException
 import vontrostorff.de.JwtService
 import vontrostorff.de.database.DatabaseService
 import vontrostorff.de.mail.sendWelcomeEmail
+import vontrostorff.de.plugins.views.calendarView
+import vontrostorff.de.plugins.views.tableView
 import vontrostorff.de.templates.LayoutTemplate
 import java.time.LocalDate
 import java.time.YearMonth
@@ -31,10 +33,13 @@ fun Application.configureTemplating() {
         registerGet()
         registerPost()
         get("table") {
-            table()
+            tableView()
         }
         get("my") {
             my()
+        }
+        get("calendar") {
+            calendarView()
         }
         get("/impressum") {
             impressum()
@@ -68,6 +73,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.home() {
             }
             p {
                 +"Hier kannst du dich registrieren, um an der Challenge des Lauftreffs der Uni Bonn teilzunehmen. Wer am häufigsten anwesend ist, gewinnt das gelbe Trikot."
+                +"Es zählen ggf. auch Läufe außerhalb des offiziellen Lauftreffs, beispielsweise der Uni-Cup."
             }
             p {
                 +"Die Anwesenheit wird über eine E-Mail getrackt, die dir jede Woche zugeschickt wird."
@@ -90,67 +96,6 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.home() {
 
             script {
                 src = "/static/install.js"
-            }
-        }
-    }
-}
-
-private suspend fun PipelineContext<Unit, ApplicationCall>.table() {
-    val semester = DatabaseService.getSemesterByDate(LocalDate.now())
-    val userParticipationCount =
-        DatabaseService.getUserParticipationCount(semester)
-
-    call.respondHtmlTemplate(LayoutTemplate(call)) {
-        content {
-            h3("m2") {
-                +"Semester: ${semester.name} (${semester.beginning.format(DateTimeFormatter.ofPattern("dd.MM.YY"))}-${semester.end.format(DateTimeFormatter.ofPattern("dd.MM.YY"))})"
-            }
-            table("table m-2") {
-                thead {
-                    tr {
-                        th { +"#" }
-                        th { +"Name" }
-                        th { +"Score" }
-                    }
-                }
-
-                tbody {
-                    var index = 0
-                    var lastCount = Integer.MAX_VALUE
-                    for(userAndCount in userParticipationCount.sortedBy { -it.count }){
-                        if(userAndCount.count < lastCount){
-                            lastCount = userAndCount.count
-                            index++
-                        }
-                        tr {
-                            when (index) {
-                                1 -> {
-                                    th {
-                                        +((index).toString() + " ")
-                                        img {
-                                            style = "height:1em"
-                                            src = "/static/yellow-shirt.svg"
-                                        }
-                                    }
-                                }
-                                2 -> {
-                                    th {
-                                        +((index).toString() + " ")
-                                        //img {
-                                        //    style = "height:1em"
-                                        //    src = "/static/silver-shirt.svg"
-                                        //}
-                                    }
-                                }
-                                else -> {
-                                    th { +(index).toString() }
-                                }
-                            }
-                            td { + userAndCount.user.name.escapeHTML() }
-                            td { + userAndCount.count.toString() }
-                        }
-                    }
-                }
             }
         }
     }

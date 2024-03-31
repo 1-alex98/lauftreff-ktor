@@ -4,6 +4,8 @@ create table if not exists "user"(
     name varchar(255) not null
 );
 
+alter table "user" add column trainer bool default false not null;
+
 create table if not exists "semester"(
     id SERIAL PRIMARY KEY,
     name varchar(255) not null unique ,

@@ -1,7 +1,6 @@
 package vontrostorff.de.database
 
 import io.ktor.server.plugins.*
-import io.ktor.util.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
@@ -35,12 +34,31 @@ object DatabaseService{
             }
         return semesters.map { Semesters.createEntity(it, withReferences = false) }[0]
     }
-    fun coursesBySemesterId(semsterId: Int): List<Course> {
+    fun getSemestersNowAndInTheFuture(date: LocalDate): List<Semster> {
+        val semesters = database
+            .from(Semesters)
+            .select()
+            .whereWithConditions {
+                it += Semesters.end greaterEq date
+            }
+        return semesters.map { Semesters.createEntity(it, withReferences = false)}
+    }
+
+    fun getSemesterByID(id: Int): Semster {
+        val semesters = database
+            .from(Semesters)
+            .select()
+            .whereWithConditions {
+                it += Semesters.id eq id
+            }
+        return semesters.map { Semesters.createEntity(it, withReferences = false) }[0]
+    }
+    fun coursesBySemesterId(semesterId: Int): List<Course> {
         val query = database
             .from(Courses)
             .select()
             .whereWithConditions {
-                it += Courses.semester eq semsterId
+                it += Courses.semester eq semesterId
             }
         return query.map { Courses.createEntity(it, withReferences = false) }
     }

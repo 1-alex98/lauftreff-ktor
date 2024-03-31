@@ -50,13 +50,6 @@ public suspend fun PipelineContext<Unit, ApplicationCall>.tableView() {
                                             src = "/static/yellow-shirt.svg"
                                         }
                                     }
-
-                                    2 -> {
-                                        img {
-                                            style = "height:1em"
-                                            src = "/static/silver-shirt.svg"
-                                        }
-                                    }
                                 }
                             }
                             td { +userAndCount.user.name.escapeHTML() }

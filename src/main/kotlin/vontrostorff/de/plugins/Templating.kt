@@ -10,8 +10,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.postgresql.util.PSQLException
 import vontrostorff.de.JwtService
 import vontrostorff.de.database.DatabaseService
@@ -19,7 +17,6 @@ import vontrostorff.de.mail.sendWelcomeEmail
 import vontrostorff.de.plugins.views.calendarView
 import vontrostorff.de.plugins.views.tableView
 import vontrostorff.de.templates.LayoutTemplate
-import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors.groupingBy
@@ -40,6 +37,9 @@ fun Application.configureTemplating() {
         }
         get("calendar") {
             calendarView()
+        }
+        get("calendar/{semester}") {
+            calendarView(call.parameters["semester"]?.toInt())
         }
         get("/impressum") {
             impressum()
